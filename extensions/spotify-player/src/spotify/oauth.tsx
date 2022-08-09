@@ -2,9 +2,8 @@ import { OAuth } from "@raycast/api";
 import fetch from "node-fetch";
 
 const clientId = "7bbb789c01ff44ed842907b7a80c404f";
-const scope = "user-library-modify user-modify-playback-state";
-//
-// user-read-currently-playing
+const scope = "user-library-modify user-modify-playback-state user-read-playback-state playlist-read-private";
+
 export const oauthClient = new OAuth.PKCEClient({
   redirectMethod: OAuth.RedirectMethod.Web,
   providerName: "Spotify",
@@ -16,15 +15,19 @@ export const oauthClient = new OAuth.PKCEClient({
 
 export async function isAuthorized(): Promise<boolean> {
   const tokenSet = await oauthClient.getTokens();
-  if (tokenSet?.accessToken) {
-    return tokenSet?.accessToken.length > 0;
+  if (tokenSet?.accessToken && tokenSet?.accessToken?.length === 0) {
+    return false;
   }
-  return false;
+  if (!compareScopes(tokenSet?.scope ?? "", scope)) {
+    return false;
+  }
+
+  return true;
 }
 
 export async function authorize(): Promise<void> {
   const tokenSet = await oauthClient.getTokens();
-  if (tokenSet?.accessToken) {
+  if (tokenSet?.accessToken && compareScopes(tokenSet?.scope ?? "", scope)) {
     if (tokenSet.refreshToken && tokenSet.isExpired()) {
       await oauthClient.setTokens(await refreshTokens(tokenSet.refreshToken));
     }
@@ -74,4 +77,13 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
 
 export async function logout() {
   await oauthClient.removeTokens();
+}
+
+function compareScopes(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+
+  const aScopes = a.split(" ");
+  const bScopes = a.split(" ");
+
+  return aScopes.every((scope) => bScopes.includes(scope));
 }

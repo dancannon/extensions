@@ -443,6 +443,52 @@ export async function searchTracks(query: string, limit: number): Promise<Respon
   }
 }
 
+export function useMyPlaylists(): Response<SpotifyApi.ListOfUsersPlaylistsResponse> {
+  const [response, setResponse] = useState<Response<SpotifyApi.ListOfUsersPlaylistsResponse>>({ isLoading: false });
+
+  let cancel = false;
+
+  useEffect(() => {
+    async function fetchData() {
+      await authorizeIfNeeded();
+
+      if (cancel) {
+        return;
+      }
+
+      try {
+        const response =
+          (await spotifyApi
+            .getUserPlaylists({ limit: 50 })
+            .then((response: { body: any }) => response.body as SpotifyApi.ListOfUsersPlaylistsResponse)
+            .catch((error) => {
+              setResponse((oldState) => ({ ...oldState, error: (error as unknown as SpotifyApi.ErrorObject).message }));
+            })) ?? undefined;
+
+        if (!cancel) {
+          setResponse((oldState) => ({ ...oldState, result: response }));
+        }
+      } catch (e: any) {
+        if (!cancel) {
+          setResponse((oldState) => ({ ...oldState, error: (e as unknown as SpotifyApi.ErrorObject).message }));
+        }
+      } finally {
+        if (!cancel) {
+          setResponse((oldState) => ({ ...oldState, isLoading: false }));
+        }
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      cancel = true;
+    };
+  }, []);
+
+  return response;
+}
+
 export function usePlaylistSearch(query: string | undefined): Response<SpotifyApi.PlaylistSearchResponse> {
   const [response, setResponse] = useState<Response<SpotifyApi.PlaylistSearchResponse>>({ isLoading: false });
 
