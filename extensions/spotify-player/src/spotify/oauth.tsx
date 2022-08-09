@@ -1,7 +1,7 @@
 import { OAuth } from "@raycast/api";
 import fetch from "node-fetch";
 
-const clientId = "aaae4fa54ce84bdbb3468f7f1343568a"; // TODO: DO NOT MERGE WITH THIS 🚨🚨
+const clientId = "7bbb789c01ff44ed842907b7a80c404f";
 const scope = "user-library-modify user-modify-playback-state user-read-playback-state";
 
 export const oauthClient = new OAuth.PKCEClient({
