@@ -682,6 +682,17 @@ export function useGetDevices(): Response<SpotifyApi.UserDevicesResponse> {
   return response;
 }
 
+export async function getDevices(): Promise<Response<SpotifyApi.UserDevicesResponse> | undefined> {
+  await authorizeIfNeeded();
+  try {
+    const response = await spotifyApi.getMyDevices();
+    if (response) {
+      return { result: response.body };
+    }
+  } catch (e: any) {
+    return { error: (e as unknown as SpotifyApi.ErrorObject).message };
+  }
+}
 export async function transferPlayback(deviceId: string, play: boolean): Promise<Response<TrackInfo> | undefined> {
   await authorizeIfNeeded();
   try {

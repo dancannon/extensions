@@ -26,12 +26,6 @@ export default function Devices() {
 
   const devices =
     response.result?.devices.sort((a, b) => {
-      // First sort by active as we want to have the active device at the top regardless of
-      // its name
-      if (a.is_active) return -1;
-      if (b.is_active) return 1;
-
-      // Otherwise sort the devices alphabetically
       if (a.name < b.name) return -1;
       if (a.name > b.name) return 1;
       return 0;

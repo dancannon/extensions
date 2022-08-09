@@ -1,6 +1,6 @@
 // This whole file is unused
 
-import { List, ActionPanel, Action, Image, Icon, closeMainWindow } from "@raycast/api";
+import { List, ActionPanel, Action, Image, Icon, closeMainWindow, popToRoot } from "@raycast/api";
 import { play, playShuffled, transferPlayback } from "../spotify/client";
 
 function getDeviceIcon(device: SpotifyApi.UserDevice) {
@@ -72,8 +72,9 @@ export default function DeviceListItem(props: { device: SpotifyApi.UserDevice; s
               title="Play"
               icon={Icon.Play}
               onAction={async () => {
-                await closeMainWindow();
+                await closeMainWindow({ clearRootSearch: true });
                 await transferPlayback(device.id as string, true);
+                await popToRoot(); // Unload the component so it is reloaded next time
               }}
             />
           )}

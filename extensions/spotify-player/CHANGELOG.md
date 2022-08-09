@@ -1,5 +1,9 @@
 # Spotify Player Changelog
 
+## [Feature] - 2022-08-11
+
+- Add new command "Devices" to transfer playback between your devices
+
 ## [Bug Fixes] - 2022-08-01
 
 - Properly handled states for unauthorized state in menu bar and no-view commands
