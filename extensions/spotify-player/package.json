@@ -96,6 +96,13 @@
       "mode": "view"
     },
     {
+      "name": "devices",
+      "title": "Devices",
+      "subtitle": "Spotify",
+      "description": "Connect to a device",
+      "mode": "view"
+    },
+    {
       "name": "likeCurrentSong",
       "subtitle": "Spotify",
       "title": "Like Current Song",

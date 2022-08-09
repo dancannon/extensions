@@ -594,9 +594,9 @@ export function useGetCategoryPlaylists(categoryId: string): Response<SpotifyApi
   let cancel = false;
 
   useEffect(() => {
-    authorizeIfNeeded();
-
     async function fetchData() {
+      await authorizeIfNeeded();
+
       if (cancel) {
         return;
       }
@@ -633,4 +633,65 @@ export function useGetCategoryPlaylists(categoryId: string): Response<SpotifyApi
   }, [categoryId]);
 
   return response;
+}
+
+export function useGetDevices(): Response<SpotifyApi.UserDevicesResponse> {
+  const [response, setResponse] = useState<Response<SpotifyApi.UserDevicesResponse>>({ isLoading: true });
+
+  let cancel = false;
+
+  useEffect(() => {
+    async function fetchData() {
+      await authorizeIfNeeded();
+
+      if (cancel) {
+        return;
+      }
+      setResponse((oldState) => ({ ...oldState, isLoading: true }));
+
+      try {
+        const response =
+          (await spotifyApi
+            .getMyDevices()
+            .then((response: { body: any }) => response.body as SpotifyApi.UserDevicesResponse)
+            .catch((error) => {
+              setResponse((oldState) => ({ ...oldState, error: (error as unknown as SpotifyApi.ErrorObject).message }));
+            })) ?? undefined;
+
+        if (!cancel) {
+          setResponse((oldState) => ({ ...oldState, result: response }));
+        }
+      } catch (e: any) {
+        if (!cancel) {
+          setResponse((oldState) => ({ ...oldState, error: (e as unknown as SpotifyApi.ErrorObject).message }));
+        }
+      } finally {
+        if (!cancel) {
+          setResponse((oldState) => ({ ...oldState, isLoading: false }));
+        }
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      cancel = true;
+    };
+  }, []);
+
+  return response;
+}
+
+export async function transferPlayback(deviceId: string, play: boolean): Promise<Response<TrackInfo> | undefined> {
+  await authorizeIfNeeded();
+  try {
+    const response = await spotifyApi.transferMyPlayback([deviceId], {
+      play: play,
+    });
+    if (response) {
+      return {};
+    }
+  } catch (e: any) {
+    return { error: (e as unknown as SpotifyApi.ErrorObject).message };
+  }
 }
