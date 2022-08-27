@@ -19,7 +19,7 @@ export function AlbumsList(props: { albums: SpotifyApi.AlbumObjectSimplified[]; 
 export function AlbumsListByArtist(props: { artistId: string; spotifyInstalled: boolean }) {
   const { artistId, spotifyInstalled } = props;
   const response = getArtistAlbums(artistId);
-  const albums = response.result?.items;
+  const albums = response.result?.items ?? [];
   return (
     <List navigationTitle="Search Albums" searchBarPlaceholder="Search albums by keywords..." throttle isShowingDetail>
       {albums &&

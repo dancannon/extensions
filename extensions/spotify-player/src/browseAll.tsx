@@ -12,7 +12,7 @@ function BrowseAll() {
 
   return (
     <Grid searchBarPlaceholder="Search genres..." isLoading={response.isLoading} throttle>
-      {response.result?.categories.items.map((c) => (
+      {(response.result?.categories?.items ?? []).map((c) => (
         <CategoryItem key={c.id} category={c} />
       ))}
     </Grid>

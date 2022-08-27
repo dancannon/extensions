@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Color, Icon, Image, List, showHUD } from "@raycast/api";
+import { Action, ActionPanel, Color, Icon, Image, List, showHUD, showToast, Toast } from "@raycast/api";
 import _ from "lodash";
 import { getArtistAlbums, play, startPlaySimilar } from "../spotify/client";
 import { AlbumsList } from "./artistAlbums";
@@ -10,21 +10,32 @@ export default function ArtistListItem(props: { artist: SpotifyApi.ArtistObjectF
     mask: Image.Mask.RoundedRectangle,
   };
   const title = `${artist.name}`;
+
+  const response = getArtistAlbums(artist.id);
+  if (response.error) {
+    showToast(Toast.Style.Failure, "Failed to get artist albums", response.error);
+  }
+
+  const albums = response.result?.items ?? [];
+
   return (
     <List.Item
       title={title}
       subtitle={artist.genres.join(", ")}
       icon={icon}
-      detail={<ArtistDetail artist={artist} />}
-      actions={<ArtistsActionPanel title={title} artist={artist} spotifyInstalled={spotifyInstalled} />}
+      detail={<ArtistDetail isLoading={response.isLoading} artist={artist} albums={albums} />}
+      actions={<ArtistsActionPanel title={title} artist={artist} albums={albums} spotifyInstalled={spotifyInstalled} />}
     />
   );
 }
 
-function ArtistsActionPanel(props: { title: string; artist: SpotifyApi.ArtistObjectFull; spotifyInstalled: boolean }) {
-  const { title, artist, spotifyInstalled } = props;
-  const response = getArtistAlbums(artist.id);
-  const albums = response.result?.items;
+function ArtistsActionPanel(props: {
+  title: string;
+  artist: SpotifyApi.ArtistObjectFull;
+  albums: SpotifyApi.AlbumObjectSimplified[];
+  spotifyInstalled: boolean;
+}) {
+  const { title, artist, albums, spotifyInstalled } = props;
 
   const artistImage = _(artist.images).last()?.url;
   return (
@@ -67,13 +78,14 @@ function ArtistsActionPanel(props: { title: string; artist: SpotifyApi.ArtistObj
   );
 }
 
-function ArtistDetail(props: { artist: SpotifyApi.ArtistObjectFull }) {
-  const response = getArtistAlbums(props.artist.id);
-  const albums = response.result?.items;
+function ArtistDetail(props: {
+  isLoading?: boolean;
+  artist: SpotifyApi.ArtistObjectFull;
+  albums: SpotifyApi.AlbumObjectSimplified[];
+}) {
+  const { artist, albums, isLoading } = props;
 
-  return (
-    <List.Item.Detail isLoading={response.isLoading} markdown={getArtistDetailMarkdownContent(props.artist, albums)} />
-  );
+  return <List.Item.Detail isLoading={isLoading} markdown={getArtistDetailMarkdownContent(artist, albums)} />;
 }
 
 const getArtistDetailMarkdownContent = (

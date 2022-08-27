@@ -57,6 +57,6 @@ export function AlbumsActionPanel(props: { album: SpotifyApi.AlbumObjectSimplifi
 function TracksForAlbum(props: { albumId: string }) {
   const response = getAlbumTracks(props.albumId);
 
-  const tracks = response.result?.items as SpotifyApi.TrackObjectFull[];
+  const tracks = (response.result?.items ?? []) as SpotifyApi.TrackObjectFull[];
   return <TracksList tracks={tracks} isLoading={response.isLoading} />;
 }

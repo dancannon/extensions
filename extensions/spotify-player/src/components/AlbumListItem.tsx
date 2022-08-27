@@ -34,7 +34,7 @@ export default function AlbumListItem(props: {
 function AlbumDetail(props: { album: SpotifyApi.AlbumObjectSimplified }) {
   const { album } = props;
   const response = getAlbumTracks(album.id);
-  const albums = response.result?.items;
+  const albums = response.result?.items ?? [];
   return <List.Item.Detail isLoading={response.isLoading} markdown={getAlbumDetailMarkdownContent(album, albums)} />;
 }
 

@@ -32,9 +32,9 @@ function SearchArtists() {
       onSearchTextChange={setSearchText}
       isLoading={response.isLoading}
       throttle
-      isShowingDetail={!_(response.result?.artists.items).isEmpty()}
+      isShowingDetail={!_(response.result?.artists?.items ?? []).isEmpty()}
     >
-      {response.result?.artists.items.map((t: SpotifyApi.ArtistObjectFull) => (
+      {(response.result?.artists?.items ?? []).map((t: SpotifyApi.ArtistObjectFull) => (
         <ArtistListItem key={t.id} artist={t} spotifyInstalled={spotifyInstalled} />
       ))}
     </List>

@@ -17,7 +17,12 @@ export default async (props: Props) => {
     return;
   }
   const response = await searchTracks(props.arguments.query, 1);
-  const firstMatch = _(response.result?.tracks.items).first();
+  if (response.error) {
+    showToast(Toast.Style.Failure, "Search has failed", response.error);
+    return;
+  }
+
+  const firstMatch = _(response.result?.tracks?.items ?? []).first();
   if (firstMatch) {
     await play(firstMatch.uri);
     await showToast(Toast.Style.Success, `${environment.theme == "light" ? "🎵" : "♫"}  ${trackTitle(firstMatch)}`);

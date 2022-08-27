@@ -15,7 +15,7 @@ function SearchTracks() {
   }
   return (
     <TracksList
-      tracks={response.result?.tracks.items}
+      tracks={response.result?.tracks?.items ?? []}
       isLoading={response.isLoading}
       searchCallback={setSearchText}
       includeDetails

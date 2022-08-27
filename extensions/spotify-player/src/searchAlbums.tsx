@@ -32,7 +32,7 @@ function SearchAlbums() {
       throttle
       itemSize={Grid.ItemSize.Large}
     >
-      {response.result?.albums.items.map((a) => (
+      {(response.result?.albums?.items ?? []).map((a) => (
         <AlbumGridItem key={a.id} album={a} spotifyInstalled={spotifyInstalled} />
       ))}
     </Grid>

@@ -31,7 +31,7 @@ function SearchPlaylists() {
       isLoading={response.isLoading}
       throttle
     >
-      {response.result?.playlists.items.map((p) => (
+      {(response.result?.playlists?.items ?? []).map((p) => (
         <PlaylistItem key={p.id} playlist={p} spotifyInstalled={spotifyInstalled} />
       ))}
     </List>
