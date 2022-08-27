@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { useGetCategoryPlaylists } from "./spotify/client";
 import { isSpotifyInstalled } from "./utils";
 import PlaylistItem from "./components/PlaylistListItem";
+import { SpotifyProvider } from "./utils/context";
 
-export default function CategoryPlaylist({ category }: { category: SpotifyApi.CategoryObject }) {
+type Props = { category: SpotifyApi.CategoryObject };
+
+function CategoryPlaylists({ category }: Props) {
   const [spotifyInstalled, setSpotifyInstalled] = useState<boolean>(false);
   const response = useGetCategoryPlaylists(category.id);
 
@@ -36,3 +39,9 @@ export default function CategoryPlaylist({ category }: { category: SpotifyApi.Ca
     </List>
   );
 }
+
+export default (props: Props) => (
+  <SpotifyProvider>
+    <CategoryPlaylists {...props} />
+  </SpotifyProvider>
+);

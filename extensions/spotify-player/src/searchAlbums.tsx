@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { useAlbumSearch } from "./spotify/client";
 import { isSpotifyInstalled } from "./utils";
 import AlbumGridItem from "./components/AlbumGridItem";
+import { SpotifyProvider } from "./utils/context";
 
-export default function SearchAlbums() {
+function SearchAlbums() {
   const [searchText, setSearchText] = useState<string>();
   const [spotifyInstalled, setSpotifyInstalled] = useState<boolean>(false);
   const response = useAlbumSearch(searchText);
@@ -37,3 +38,9 @@ export default function SearchAlbums() {
     </Grid>
   );
 }
+
+export default () => (
+  <SpotifyProvider>
+    <SearchAlbums />
+  </SpotifyProvider>
+);

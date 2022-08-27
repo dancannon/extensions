@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { usePlaylistSearch } from "./spotify/client";
 import { isSpotifyInstalled } from "./utils";
 import PlaylistItem from "./components/PlaylistListItem";
+import { SpotifyProvider } from "./utils/context";
 
-export default function SearchPlaylists() {
+function SearchPlaylists() {
   const [searchText, setSearchText] = useState<string>();
   const [spotifyInstalled, setSpotifyInstalled] = useState<boolean>(false);
   const response = usePlaylistSearch(searchText);
@@ -36,3 +37,9 @@ export default function SearchPlaylists() {
     </List>
   );
 }
+
+export default () => (
+  <SpotifyProvider>
+    <SearchPlaylists />
+  </SpotifyProvider>
+);

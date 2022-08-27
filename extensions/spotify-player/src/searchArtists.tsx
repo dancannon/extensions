@@ -2,10 +2,11 @@ import { List, showToast, Toast } from "@raycast/api";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import ArtistListItem from "./components/ArtistListItem";
+import { SpotifyProvider } from "./utils/context";
 import { useArtistsSearch } from "./spotify/client";
 import { isSpotifyInstalled } from "./utils";
 
-export default function SearchArtists() {
+function SearchArtists() {
   const [searchText, setSearchText] = useState<string>();
   const response = useArtistsSearch(searchText);
 
@@ -39,3 +40,9 @@ export default function SearchArtists() {
     </List>
   );
 }
+
+export default () => (
+  <SpotifyProvider>
+    <SearchArtists />
+  </SpotifyProvider>
+);

@@ -1,11 +1,12 @@
 import { List, showToast, Toast } from "@raycast/api";
 import _ from "lodash";
 import { useEffect, useState } from "react";
+import { SpotifyProvider } from "./utils/context";
 import TrackListItem from "./components/TrackListItem";
 import { useTrackSearch } from "./spotify/client";
 import { isSpotifyInstalled } from "./utils";
 
-export default function SearchTracks() {
+function SearchTracks() {
   const [searchText, setSearchText] = useState<string>();
   const response = useTrackSearch(searchText);
 
@@ -57,3 +58,9 @@ export function TracksList(props: {
     </List>
   );
 }
+
+export default () => (
+  <SpotifyProvider>
+    <SearchTracks />
+  </SpotifyProvider>
+);

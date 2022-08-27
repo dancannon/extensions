@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { useGetFeaturedPlaylists } from "./spotify/client";
 import { isSpotifyInstalled } from "./utils";
 import PlaylistItem from "./components/PlaylistListItem";
+import { SpotifyProvider } from "./utils/context";
 
-export default function FeaturedPlaylists() {
+function FeaturedPlaylists() {
   const [spotifyInstalled, setSpotifyInstalled] = useState<boolean>(false);
   const response = useGetFeaturedPlaylists();
 
@@ -30,3 +31,9 @@ export default function FeaturedPlaylists() {
     </List>
   );
 }
+
+export default () => (
+  <SpotifyProvider>
+    <FeaturedPlaylists />
+  </SpotifyProvider>
+);
